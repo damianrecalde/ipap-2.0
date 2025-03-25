@@ -1,0 +1,31 @@
+@import "tailwindcss";
+@custom-variant dark (&:where(.dark, .dark *));
+
+
+.img-size {
+  height: 3.75rem; /* Tamaño similar al h-11 de Tailwind (2.75rem) */
+  width: auto;    /* Mantiene la relación de aspecto */
+}
+
+.img-size-logo {
+  height: 4.75rem; /* Tamaño similar al h-11 de Tailwind (2.75rem) */
+  width: auto;    /* Mantiene la relación de aspecto */
+}
+
+.bg-ipap {
+  background-image: url('../images/ipap_fabrica.jpeg');
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-blend-mode: multiply;
+  background-color: #374151; /* bg-gray-700 */
+  border-bottom: 4px solid transparent; /* Necesario para que el gradiente funcione */
+  border-top: 4px solid transparent; /* Necesario para que el gradiente funcione */
+  border-image: linear-gradient(90deg, 
+    rgba(255, 119, 14, 1) 0%, 
+    rgba(250, 70, 1, 1) 35%, 
+    rgba(169, 104, 16, 1) 56%, 
+    rgba(0, 185, 45, 1) 77%, 
+    rgba(0, 190, 230, 1) 100%);
+  border-image-slice: 1; /* Usa todo el gradiente para el borde */
+}
