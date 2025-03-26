@@ -4,6 +4,7 @@
         "@babel/preset-env": "^7.16.0",
         "@symfony/webpack-encore": "^5.0.0",
         "@tailwindcss/postcss": "^4.0.15",
+        "copy-webpack-plugin": "^13.0.0",
         "core-js": "^3.38.0",
         "postcss": "^8.5.3",
         "postcss-loader": "^8.1.1",

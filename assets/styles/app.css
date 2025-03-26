@@ -29,3 +29,8 @@
     rgba(0, 190, 230, 1) 100%);
   border-image-slice: 1; /* Usa todo el gradiente para el borde */
 }
+
+
+.bg-ipap2 {
+  background-image: url('../images/somosBlanco.jpeg');
+}
