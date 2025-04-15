@@ -9,16 +9,23 @@ use App\Service\CourseService;
 
 final class CourseController extends AbstractController
 {
+    private CourseService $courseService;
+
+    public function __construct(CourseService $courseService)
+    {
+        $this->courseService = $courseService;
+    }
+
     #[Route('/course', name: 'course')]
-    public function index(CourseService $courseService): Response
+    public function index(): Response
     {
         $page_title = 'Listado de cursos';
-        $course = $courseService->listarCursos();
+        $courses = $this->courseService->getCourses();
 
         return $this->render('course/index.html.twig', [
             'name' => 'Cursos',
             'page_title' => $page_title,
-            'course' => $course,
+            'course' => $courses,
         ]);
     }
 }
