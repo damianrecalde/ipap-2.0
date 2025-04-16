@@ -5,7 +5,7 @@ namespace App\Service;
 use App\Service\MoodleApiService;
 
 
-class CourseService
+class CategoryService
 {
     private MoodleApiService $moodle;
 
@@ -14,11 +14,11 @@ class CourseService
         $this->moodle = $moodle;
     }
 
-    // Método para obtener la lista de cursos
-    public function getCourses(): array
+    // Método para obtener la lista de cursoscategorías
+    public function getCategory(): array
     {
         try {
-            return $this->moodle->call('core_course_get_courses');
+            return $this->moodle->call('core_course_get_categories');
 
             $data = $response->toArray();  // Convertir la respuesta a un array
 

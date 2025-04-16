@@ -22,7 +22,7 @@ services:
             - '../src/Entity/'
             - '../src/Kernel.php'
 
-    App\Service\CourseService:
+    App\Service\MoodleApiService:
         arguments:
             $moodleUrl: '%env(MOODLE_URL)%'
             $moodleToken: '%env(MOODLE_TOKEN)%'
