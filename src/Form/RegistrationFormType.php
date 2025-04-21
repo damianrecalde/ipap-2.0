@@ -2,16 +2,12 @@
 
 namespace App\Form;
 
-use App\Entity\User;
-use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
-use Symfony\Component\Form\Extension\Core\Type\PasswordType;
-use Symfony\Component\Form\FormBuilderInterface;
+use App\Entity\{User, City };
+use Symfony\Component\Form\{ AbstractType, FormBuilderInterface };
+use Symfony\Component\Form\Extension\Core\Type\{ CheckboxType, PasswordType, FileType, TextType, ChoiceType };
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Validator\Constraints\IsTrue;
-use Symfony\Component\Validator\Constraints\Length;
-use Symfony\Component\Validator\Constraints\NotBlank;
-use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Validator\Constraints\{ IsTrue, Length, NotBlank };
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 
 class RegistrationFormType extends AbstractType
 {
@@ -19,6 +15,31 @@ class RegistrationFormType extends AbstractType
     {
         $builder
             ->add('email')
+            ->add('firstname', TextType::class, [
+                'label' => 'Nombre',
+            ])
+            ->add('lastname', TextType::class, [
+                'label' => 'Apellido',
+            ])
+            ->add('dni', TextType::class, [
+                'label' => 'DNI',
+                'attr' => [
+                    'inputmode' => 'numeric',     // teclado numérico en móviles
+                    'pattern' => '\d*',           // solo números (sin puntos, guiones, etc.)
+                    'maxlength' => 8,            // opcional: limita cantidad de dígitos
+                    'placeholder' => 'Ej: 12345678'
+                ]
+            ])
+            ->add('imageProfile', FileType::class, [
+                'label' => 'Foto de perfil',
+                'mapped' => false,
+                'required' => false,
+            ])
+            ->add('city', EntityType::class, [
+                'class' => City::class,
+                'choice_label' => 'name', // Asegúrate de que City tenga un método getName()
+                'label' => 'Ciudad',
+            ])
             ->add('agreeTerms', CheckboxType::class, [
                 'mapped' => false,
                 'constraints' => [
@@ -29,8 +50,10 @@ class RegistrationFormType extends AbstractType
             ])
             ->add('roles', ChoiceType::class, [
                 'choices' => [
-                    'Admin' => 'ROLE_ADMIN',
-                    'User' => 'ROLE_USER',
+                    'Administración' => 'ROLE_ADMINISTRACION',
+                    'Campus' => 'ROLE_CAMPUS',
+                    'Soporte' => 'ROLE_SOPORTE',
+                    'Analista de datos' => 'ROLE_ANALISTA_DATOS',
                 ],
                 'expanded' => true,  // Mostrar como checkboxes
                 'multiple' => true,  // Permite seleccionar múltiples roles
@@ -51,6 +74,11 @@ class RegistrationFormType extends AbstractType
                         'max' => 4096,
                     ]),
                 ],
+            ])
+            ->add('confirmPassword', PasswordType::class, [
+                'label' => 'Repetir Contraseña',
+                'mapped' => false,
+                'required' => true,
             ])
         ;
     }

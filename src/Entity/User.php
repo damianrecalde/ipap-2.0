@@ -5,8 +5,9 @@ namespace App\Entity;
 use App\Repository\UserRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
-use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
-use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Security\Core\User\{ PasswordAuthenticatedUserInterface, UserInterface };
+use App\Entity\City;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: '`user`')]
@@ -21,6 +22,36 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column(length: 180)]
     private ?string $email = null;
+
+    #[ORM\Column(length: 255)]
+    private ?string $firstname = null;
+
+    #[ORM\Column(length: 255)]
+    private ?string $lastname = null;
+
+    #[ORM\Column(length: 8)]
+    #[Assert\NotBlank(message: 'El DNI es obligatorio.')]
+    #[Assert\Regex(
+        pattern: '/^\d+$/',
+        message: 'El DNI solo puede contener números sin espacios ni símbolos.'
+    )]
+    private ?string $dni = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $imageProfile = null;
+
+    #[ORM\ManyToOne(inversedBy: 'users')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?City $city = null;
+
+    #[ORM\Column(type: 'boolean', options:['default' => false])]
+    private bool $isOnline = false;
+
+    #[ORM\Column(type: 'boolean', options:['default' => false])]
+    private bool $isSuspended = false;
+
+    #[ORM\Column(type: 'boolean', options:['default' => false])]
+    private bool $isDeleted = false;
 
     /**
      * @var list<string> The user roles
@@ -136,6 +167,95 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setVerificationToken(?string $verificationToken): static
     {
         $this->verificationToken = $verificationToken;
+
+        return $this;
+    }
+
+    public function getFirstname(): ?string
+    {
+        return $this->firstname;
+    }
+    public function setFirstname(string $firstname): static
+    {
+        $this->firstname = $firstname;
+
+        return $this;
+    }
+    public function getLastname(): ?string
+    {
+        return $this->lastname;
+    }
+    public function setLastname(string $lastname): static
+    {
+        $this->lastname = $lastname;
+
+        return $this;
+    }
+
+    public function getDni(): ?string
+    {
+        return $this->dni;
+    }
+    
+    public function setDni(?string $dni): static
+    {
+        $this->dni = $dni;
+
+        return $this;
+    }
+
+    public function getImageProfile(): ?string
+    {
+        return $this->imageProfile;
+    }
+    public function setImageProfile(?string $imageProfile): static
+    {
+        $this->imageProfile = $imageProfile;
+
+        return $this;
+    }
+    public function getCity(): ?City
+    {
+        return $this->city;
+    }
+    public function setCity(?City $city): static
+    {
+        $this->city = $city;
+
+        return $this;
+    }
+
+    public function getIsOnline(): ?bool
+    {
+        return $this->isOnline;
+    }
+
+    public function setIsOnline(bool $isOnline): static
+    {
+        $this->isOnline = $isOnline;
+
+        return $this;
+    }
+
+    public function getIsSuspended(): bool
+    {
+        return $this->isSuspended;
+    }
+
+    public function setIsSuspended(bool $isSuspended): static
+    {
+        $this->isSuspended = $isSuspended;
+        return $this;
+    }
+
+    public function getIsDeleted(): bool
+    {
+        return $this->isDeleted;
+    }
+
+    public function setIsDeleted(bool $isDeleted): static
+    {
+        $this->isDeleted = $isDeleted;
 
         return $this;
     }

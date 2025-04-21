@@ -44,7 +44,13 @@ security:
     # Easy way to control access for large sections of your site
     # Note: Only the *first* access control that matches will be used
     access_control:
+         # Vistas a las que solo puede acceder el administrador
+         - { path: ^/admin, roles: ROLE_SUPER_ADMIN }
+         - { path: ^/register, roles: ROLE_ADMIN }
+
+         # Vistas a las que solo pueden acceder usuarios registrados
          - { path: ^/dashboard, roles: [ROLE_ADMIN, ROLE_USER] }
+         - { path: ^/user, roles: [ROLE_ADMIN, ROLE_USER, ROLE_CAMPUS, ROLE_SOPORTE, ROLE_ALAISTA_DATOS] }
         # - { path: ^/profile, roles: ROLE_USER }
 
 when@test:

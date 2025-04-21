@@ -6,6 +6,9 @@
 #parameters:
 #    moodle_url: '%env(MOODLE_URL)%'
 #    moodle_token: '%env(MOODLE_TOKEN)%'
+
+parameters:
+    profile_images_directory: '%kernel.project_dir%/public/uploads/profile_images'
     
 services:
     # default configuration for services in *this* file
@@ -22,10 +25,21 @@ services:
             - '../src/Entity/'
             - '../src/Kernel.php'
 
+    #Moodle api service 
     App\Service\MoodleApiService:
         arguments:
             $moodleUrl: '%env(MOODLE_URL)%'
             $moodleToken: '%env(MOODLE_TOKEN)%'
+
+    #Listeners
+    App\EventListener\LoginListener:
+        tags:
+            - { name: kernel.event_listener, event: Symfony\Component\Security\Http\Event\LoginSuccessEvent }
+
+    App\EventListener\LogoutListener:
+        tags:
+            - { name: kernel.event_listener, event: Symfony\Component\Security\Http\Event\LogoutEvent }
+
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
