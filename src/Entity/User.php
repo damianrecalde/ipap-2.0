@@ -8,6 +8,8 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\{ PasswordAuthenticatedUserInterface, UserInterface };
 use App\Entity\City;
 use Symfony\Component\Validator\Constraints as Assert;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: '`user`')]
@@ -71,6 +73,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     // Agregamos el campo verificationToken
     #[ORM\Column(nullable: true)]
     private ?string $verificationToken = null;
+
+    #[ORM\ManyToMany(targetEntity:WorkTeam::class, inversedBy: 'users')]
+    #[ORM\JoinTable(name: 'user_work_team')]
+    private collection $workTeams;
 
     public function getId(): ?int
     {
@@ -256,6 +262,32 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setIsDeleted(bool $isDeleted): static
     {
         $this->isDeleted = $isDeleted;
+
+        return $this;
+    }
+
+    public function __construct()
+    {
+        $this->workTeams = new ArrayCollection();
+    }
+    public function getWorkTeams(): Collection
+    {
+        return $this->workTeams;
+    }
+    public function addWorkTeam(Workteam $workTeam): static
+    {
+        if (!$this->workTeams->contains($workTeam)) {
+            $this->workTeams[] = $workTeam;
+            $workTeam->addUser($this);
+        }
+
+        return $this;
+    }
+    public function removeWorkTeam(Workteam $workTeam): static
+    {
+        if ($this->workTeams->removeElement($workTeam)) {
+            $workTeam->removeUser($this);
+        }
 
         return $this;
     }

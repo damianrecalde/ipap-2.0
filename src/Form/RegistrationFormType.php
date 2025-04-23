@@ -2,7 +2,7 @@
 
 namespace App\Form;
 
-use App\Entity\{User, City };
+use App\Entity\{User, City, WorkTeam  };
 use Symfony\Component\Form\{ AbstractType, FormBuilderInterface };
 use Symfony\Component\Form\Extension\Core\Type\{ CheckboxType, PasswordType, FileType, TextType, ChoiceType };
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -48,12 +48,22 @@ class RegistrationFormType extends AbstractType
                     ]),
                 ],
             ])
+            ->add('workTeams', EntityType::class, [
+                'class' => WorkTeam::class,
+                'choice_label' => 'name',
+                'label' => 'Grupos de trabajo',
+                'multiple' => true,       // permite seleccionar más de uno
+                'expanded' => false,      // false = <select>, true = checkboxes
+                'required' => false,
+            ])
             ->add('roles', ChoiceType::class, [
                 'choices' => [
                     'Administración' => 'ROLE_ADMINISTRACION',
                     'Campus' => 'ROLE_CAMPUS',
                     'Soporte' => 'ROLE_SOPORTE',
                     'Analista de datos' => 'ROLE_ANALISTA_DATOS',
+                    'Administrador' => 'ROLE_ADMIN',
+                    'Usuario' => 'ROLE_USER',
                 ],
                 'expanded' => true,  // Mostrar como checkboxes
                 'multiple' => true,  // Permite seleccionar múltiples roles

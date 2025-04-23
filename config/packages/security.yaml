@@ -46,7 +46,7 @@ security:
     access_control:
          # Vistas a las que solo puede acceder el administrador
          - { path: ^/admin, roles: ROLE_SUPER_ADMIN }
-         - { path: ^/register, roles: ROLE_ADMIN }
+         #- { path: ^/register, roles: ROLE_ADMIN }
 
          # Vistas a las que solo pueden acceder usuarios registrados
          - { path: ^/dashboard, roles: [ROLE_ADMIN, ROLE_USER] }

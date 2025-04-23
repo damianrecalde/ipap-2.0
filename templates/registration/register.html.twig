@@ -188,6 +188,22 @@
                                 </div>
                                 {{ form_errors(registrationForm.roles) }}
                             </div>
+                        <div class="grid grid-cols-1">
+                            <!-- Equipos de trabajo -->
+                            <div>
+                                {{ form_label(registrationForm.workTeams, 'Grupos de trabajo', {
+                                    'label_attr': {'class': 'block mb-2 text-sm font-medium text-gray-900 dark:text-white'}
+                                }) }}
+                                <div class="relative">
+                                    {{ form_widget(registrationForm.workTeams, {
+                                        'attr': {
+                                            'class': 'bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:outline-none focus:ring-1 focus:ring-orange-400 focus:border-orange-400 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-orange-400 dark:focus:border-orange-400'
+                                        }
+                                    }) }}
+                                </div>
+                                {{ form_errors(registrationForm.workTeams) }}
+                            </div>
+                        </div>
                         </div>
                         <!-- Última fila: Términos -->
                         <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">

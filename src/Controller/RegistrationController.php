@@ -34,32 +34,42 @@ class RegistrationController extends AbstractController
             /** @var string $plainPassword */
             $plainPassword = $form->get('plainPassword')->getData();
 
-            // encode the plain password
+            // Encode the plain password
             $user->setPassword($userPasswordHasher->hashPassword($user, $plainPassword));
 
-            //Imagen de usuario
-            if ($imageFile) {
-                $originalFileName = pathinfo($imageFile->getClientOriginalName(), PATHINFO_FILENAME);
+            // Imagen de perfil
+            /** @var UploadedFile $imageProfile */
+            $imageProfile = $form->get('imageProfile')->getData();  // Asegúrate de obtener la imagen desde el formulario
+
+            if ($imageProfile) {
+                // Obtener el nombre original del archivo
+                $originalFileName = pathinfo($imageProfile->getClientOriginalName(), PATHINFO_FILENAME);
+
+                // Crear un nombre seguro para el archivo
                 $safeFileName = $this->slugger->slug($originalFileName);
-                $newFileName = $safeFileName.'-'.uniqid().'.'.$imageFile->guessExtension();
+
+                // Crear un nombre único para evitar colisiones
+                $newFileName = $safeFileName.'-'.uniqid().'.'.$imageProfile->guessExtension();
 
                 try {
-                    $imageFile->move(
+                    // Mover el archivo a la carpeta de destino
+                    $imageProfile->move(
                         $this->getParameter('profile_images_directory'),
                         $newFileName
                     );
-                } catch (FileException $e) {
-                    $this->addFlashh('error', 'Error al subir la imagen de perfil.');
 
-                    //Guardando el nombre del archivo en el User
+                    // Guardar el nombre del archivo en el objeto User
                     $user->setImageProfile($newFileName);
+                } catch (FileException $e) {
+                    $this->addFlash('error', 'Error al subir la imagen de perfil.');
                 }
             }
 
+            // Persistir el usuario
             $entityManager->persist($user);
             $entityManager->flush();
 
-            // generate a signed url and email it to the user
+            // Enviar el correo de verificación de email
             $this->emailVerifier->sendEmailConfirmation('app_verify_email', $user,
                 (new TemplatedEmail())
                     ->from(new Address('frecalde.ipap@gmail.com', 'IPAP Tierra del Fuego A.eI.A.S.'))
@@ -68,16 +78,16 @@ class RegistrationController extends AbstractController
                     ->htmlTemplate('registration/confirmation_email.html.twig')
             );
 
-            // do anything else you need here, like send an email
-
+            // Redirigir al dashboard después del registro
             return $this->redirectToRoute('dashboard');
         }
 
         return $this->render('registration/register.html.twig', [
+            'registrationForm' => $form->createView(),
             'page_title' => $page_title,
-            'registrationForm' => $form,
         ]);
     }
+
 
     #[Route('/verify/email', name: 'app_verify_email')]
     public function verifyUserEmail(Request $request, TranslatorInterface $translator): Response
