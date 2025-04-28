@@ -76,7 +76,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\ManyToMany(targetEntity:WorkTeam::class, inversedBy: 'users')]
     #[ORM\JoinTable(name: 'user_work_team')]
-    private collection $workTeams;
+    private Collection $workTeams;
 
     public function getId(): ?int
     {

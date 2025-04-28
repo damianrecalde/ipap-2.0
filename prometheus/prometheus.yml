@@ -1,0 +1,11 @@
+global:
+  scrape_interval: 15s  # Intervalo en segundos entre cada scrape de métricas
+
+scrape_configs:
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['localhost:9090']  # Dirección de Prometheus en el contenedor o en tu servidor
+
+  - job_name: 'app'
+    static_configs:
+      - targets: ['symfony_app:80']  # Aquí añades las direcciones de los servicios que deseas monitorear

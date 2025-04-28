@@ -1,0 +1,16 @@
+version: '3.8'
+
+services:
+  app:
+    ports:
+      - "8000:8000"
+  database:
+    ports:
+      - "5432:5432"
+  mailer:
+    ports:
+      - "1025:1025"
+      - "8025:8025"
+  mercure:
+    ports:
+      - "3000:80"

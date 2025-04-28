@@ -1,0 +1,36 @@
+services:
+###> doctrine/doctrine-bundle ###
+  database:
+    image: postgres:16-alpine  # Especifica la imagen de PostgreSQL
+    ports:
+      - "5433:5432"            # Mapea el puerto 5433 de tu máquina al 5432 del contenedor
+    environment:
+      POSTGRES_USER: user      # Establece el nombre del usuario
+      POSTGRES_PASSWORD: password  # Establece la contraseña del usuario
+      POSTGRES_DB: your_db_name  # Establece el nombre de la base de datos
+###< doctrine/doctrine-bundle ###
+
+###> symfony/mailer ###
+  mailer:
+    image: axllent/mailpit
+    ports:
+      - "1025:1025"
+      - "8025:8025"
+    environment:
+      MP_SMTP_AUTH_ACCEPT_ANY: 1
+      MP_SMTP_AUTH_ALLOW_INSECURE: 1
+###< symfony/mailer ###
+
+###> dunglas/mercure ###
+  mercure:
+    image: dunglas/mercure
+    ports:
+      - "3000:80"
+    environment:
+      JWT_KEY: gHpck1y4B+sCM/10CyBU256KL2VoVdQQlqlUwqfMtv4=
+      ALLOW_ANONYMOUS: 1
+      CORS_ALLOWED_ORIGINS: '*'
+      PUBLISH_ALLOWED_ORIGINS: '*'
+      MERCURE_PUBLISHER_JWT_KEY: gHpck1y4B+sCM/10CyBU256KL2VoVdQQlqlUwqfMtv4=
+      MERCURE_SUBSCRIBER_JWT_KEY: gHpck1y4B+sCM/10CyBU256KL2VoVdQQlqlUwqfMtv4=
+###< dunglas/mercure ### 
