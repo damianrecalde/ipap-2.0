@@ -40,4 +40,14 @@ class CityRepository extends ServiceEntityRepository
     //            ->getOneOrNullResult()
     //        ;
     //    }
+
+    public function index(CityRepository $cityRepository): Response
+    {
+        $cities = $cityRepository->findAll();
+
+        return $this->render('city/index.html.twig', [
+            'cities' => $cities,
+        ]);
+    }
+
 }

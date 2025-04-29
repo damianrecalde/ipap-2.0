@@ -32,7 +32,7 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
     ports:
-      - "5433:5432"   # <- AQUÍ el cambio importante
+      - "5433:5432"
     networks:
       - app_network
 
