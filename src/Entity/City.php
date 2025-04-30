@@ -28,10 +28,17 @@ class City
     #[ORM\OneToMany(mappedBy: 'city', targetEntity: User::class)]
     private Collection $users;
 
+    /**
+     * @var Collection<int, Grupo>
+     */
+    #[ORM\OneToMany(targetEntity: Grupo::class, mappedBy: 'localidad')]
+    private Collection $grupos;
+
     // El constructor inicializa la colección correctamente
     public function __construct()
     {
         $this->users = new ArrayCollection(); // Corregí $this->user a $this->users
+        $this->grupos = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -105,5 +112,35 @@ class City
     public function __toString(): string
     {
         return $this->name;
+    }
+
+    /**
+     * @return Collection<int, Grupo>
+     */
+    public function getGrupos(): Collection
+    {
+        return $this->grupos;
+    }
+
+    public function addGrupo(Grupo $grupo): static
+    {
+        if (!$this->grupos->contains($grupo)) {
+            $this->grupos->add($grupo);
+            $grupo->setLocalidad($this);
+        }
+
+        return $this;
+    }
+
+    public function removeGrupo(Grupo $grupo): static
+    {
+        if ($this->grupos->removeElement($grupo)) {
+            // set the owning side to null (unless already changed)
+            if ($grupo->getLocalidad() === $this) {
+                $grupo->setLocalidad(null);
+            }
+        }
+
+        return $this;
     }
 }
