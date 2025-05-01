@@ -62,7 +62,7 @@ class RegistrationFormType extends AbstractType
                     'Campus' => 'ROLE_CAMPUS',
                     'Soporte' => 'ROLE_SOPORTE',
                     'Analista de datos' => 'ROLE_ANALISTA_DATOS',
-                    'Administrador' => 'ROLE_ADMIN',
+                    'Admin' => 'ROLE_ADMIN',
                     'Usuario' => 'ROLE_USER',
                 ],
                 'expanded' => true,  // Mostrar como checkboxes

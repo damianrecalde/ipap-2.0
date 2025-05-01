@@ -4,8 +4,6 @@ services:
       context: .
       dockerfile: Dockerfile
     container_name: symfony_app
-    ports:
-      - "8000:8000"
     environment:
       APP_ENV: ${APP_ENV}
       DATABASE_URL: ${DATABASE_URL}
@@ -59,6 +57,22 @@ services:
       - app_network
     env_file:
       - .env
+
+  nginx:
+    image: nginx:latest
+    container_name: symfony_nginx
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./docker/nginx/conf.d:/etc/nginx/conf.d
+      - ./docker/nginx/certs:/etc/nginx/certs
+      - .:/var/www/html
+    depends_on:
+      - app
+    networks:
+      - app_network
+    restart: always
 
 volumes:
   postgres_data:
