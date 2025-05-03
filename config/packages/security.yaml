@@ -53,7 +53,9 @@ security:
          # Vistas a las que solo pueden acceder usuarios registrados
          - { path: ^/dashboard, roles: [ROLE_ADMIN, ROLE_USER] }
          - { path: ^/user, roles: [ROLE_ADMIN, ROLE_USER, ROLE_CAMPUS, ROLE_SOPORTE, ROLE_ANALISTA_DATOS] }
-        # - { path: ^/profile, roles: ROLE_USER }
+         - { path: ^/profile, roles: ROLE_USER }
+         - { path: ^/profile/\d+/edit, roles: [ROLE_USER, ROLE_ADMIN] }
+
 
 when@test:
     security:

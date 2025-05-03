@@ -40,4 +40,21 @@ class CourseRepository extends ServiceEntityRepository
     //            ->getOneOrNullResult()
     //        ;
     //    }
+
+        public function findAllCourses(): array
+        {
+            return $this->createQueryBuilder('c')
+                ->orderBy('c.id', 'ASC')
+                ->getQuery()
+                ->getResult();
+        }
+        
+        public function findCourseById($id): ?Course
+        {
+            return $this->createQueryBuilder('c')
+                ->andWhere('c.id = :id')
+                ->setParameter('id', $id)
+                ->getQuery()
+                ->getOneOrNullResult();
+        }
 }

@@ -91,7 +91,7 @@ class Course
         return $this;
     }
 
-    /*public function getGroup(): Collection
+    public function getGroup(): Collection
     {
         return $this->group;
     }
@@ -116,7 +116,7 @@ class Course
         }
 
         return $this;
-    }*/
+    }
 
     public function getImplementationMode(): ?string
     {

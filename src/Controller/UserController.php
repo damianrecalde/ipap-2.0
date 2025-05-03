@@ -10,6 +10,7 @@ use App\Entity\{User, City};
 use App\Repository\UserRepository;
 use Symfony\Component\String\Slugger\SluggerInterface;
 use App\Form\RegistrationFormType;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 final class UserController extends AbstractController
 {
@@ -38,31 +39,68 @@ final class UserController extends AbstractController
         ]);
     }
 
-    //Editando el perfil del usuario
-    #[Route('/profile/{id}/edit', name:'edit_profile')]
-    public function edit(User $user, Request $request, EntityManager $em, Security $security): Response
+    #[Route('/user/edit/{id}', name: 'edit_profile')]
+    public function edit(User $user, Request $request, EntityManagerInterface $entityManager, UserPasswordHasherInterface $passwordHasher, SluggerInterface $slugger): Response 
     {
-        $page_title = 'Editar perfil de usuario';
-        $form = $this->createForm(UserType::class, $user);
-        $form->handleRequest($request);
-
-        $currentUser = $security->getUser();
-        if (!$this->isGranted('role_admin') && $currentUser !== $user) {
+        
+        // 🔒 Solo el usuario logueado o un administrador puede editar
+        if ($this->getUser() !== $user && !$this->isGranted('ROLE_ADMIN')) {
             throw $this->createAccessDeniedException('No tienes permiso para editar este perfil.');
         }
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            $em->persist($user);
-            $em->flush();
+        // 🧾 Crear y procesar formulario
+        $form = $this->createForm(RegistrationFormType::class, $user);
+        $form->handleRequest($request);
 
-            return $this->redirectToRoute('user');
+        if ($form->isSubmitted() && $form->isValid()) {
+            // 🔑 Manejar cambio de contraseña
+            $oldPassword = $form->get('oldPassword')->getData();
+            $newPassword = $form->get('plainPassword')->getData();
+
+            if ($oldPassword && $newPassword) {
+                if ($passwordHasher->isPasswordValid($user, $oldPassword)) {
+                    $user->setPassword($passwordHasher->hashPassword($user, $newPassword));
+                } else {
+                    $this->addFlash('danger', 'La contraseña actual es incorrecta.');
+                    return $this->redirectToRoute('user_edit', ['id' => $user->getId()]);
+                }
+            }
+
+            // 🖼️ Manejar subida de imagen
+            $imageFile = $form->get('profileImage')->getData();
+            if ($imageFile) {
+                $originalFilename = pathinfo($imageFile->getClientOriginalName(), PATHINFO_FILENAME);
+                $safeFilename = $slugger->slug($originalFilename);
+                $newFilename = $safeFilename . '-' . uniqid() . '.' . $imageFile->guessExtension();
+
+                try {
+                    $imageFile->move(
+                        $this->getParameter('uploads_directory'), 
+                        $newFilename
+                    );
+                    $user->setProfileImage($newFilename);
+                } catch (FileException $e) {
+                    $this->addFlash('error', 'Error al subir la imagen.');
+                }
+            }
+
+            // 💾 Guardar cambios
+            $entityManager->flush();
+            $this->addFlash('success', 'Perfil actualizado correctamente.');
+
+            return $this->redirectToRoute('user_profile_view', ['id' => $user->getId()]);
         }
 
-        return $this->render('user/edit.html.twig', [
-            'form' => $form->createView(),
-            'page_title' => $page_title,
+        // 🖥️ Renderizar vista
+        return $this->render('user/profile_edit.html.twig', [
+            'editForm' => $form->createView(),
+            'user' => $user,
+            'page' => $page,
+            'tableTitle' => $tableTitle,
+            'template_name' => 'Editar mi perfil',
         ]);
     }
+
 
     //Detalle del perfil del usuario
     #[Route('/profile', name: 'user_profile')]
@@ -106,6 +144,7 @@ final class UserController extends AbstractController
         return $this->render('user/profile.html.twig', [
             'registrationForm' => $form->createView(),
             'page_title' => $page_title,
+            'user' => $user,
         ]);
     }
 

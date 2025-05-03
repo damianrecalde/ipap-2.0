@@ -42,9 +42,9 @@ class Group
     #[ORM\JoinColumn(nullable: true)]
     private ?City $city = null; 
 
-    #[ORM\ManyToOne(targetEntity: Place::class)]
+    /*#[ORM\ManyToOne(targetEntity: Place::class)]
     #[ORM\JoinColumn(nullable: true)]
-    private ?Place $place = null; // Relación con Sede (lugar)
+    private ?Place $place = null; // Relación con Sede (lugar)*/
 
     #[ORM\Column(type: 'integer', nullable: true)]
     private int $reunion_number;
@@ -150,7 +150,7 @@ class Group
         return $this;
     }
 
-    public function getPlace(): ?Place
+    /*public function getPlace(): ?Place
     {
         return $this->place;
     }
@@ -160,7 +160,7 @@ class Group
         $this->place = $place;
 
         return $this;
-    }
+    }*/
 
     public function getReunionNumber(): ?int
     {

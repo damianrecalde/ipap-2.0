@@ -49,14 +49,16 @@ services:
     ports:
       - "3000:80"
     environment:
-      MERCURE_JWT_SECRET: ${MERCURE_JWT_SECRET}
-      ALLOW_ANONYMOUS: 1
-      CORS_ALLOWED_ORIGINS: '*'
-      PUBLISH_ALLOWED_ORIGINS: '*'
-    networks:
-      - app_network
-    env_file:
-      - .env
+        - JWT_KEY=${MERCURE_SECRET_KEY}
+        - DEMO=1
+        - ALLOW_ANONYMOUS=1
+        - PUBLISH_ALLOWED_ORIGINS=*
+        - CORS_ALLOWED_ORIGINS=*
+        - DEBUG=1
+    #networks:
+    #  - app_network
+    #env_file:
+    #  - .env
 
   nginx:
     image: nginx:latest

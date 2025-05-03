@@ -31,8 +31,8 @@ class City
     /**
      * @var Collection<int, Grupo>
      */
-    #[ORM\OneToMany(targetEntity: Grupo::class, mappedBy: 'localidad')]
-    private Collection $grupos;
+    #[ORM\OneToMany(targetEntity: Group::class, mappedBy: 'city', cascade: ['persist', 'remove'])]
+    private Collection $group;
 
     // El constructor inicializa la colección correctamente
     public function __construct()
@@ -117,27 +117,27 @@ class City
     /**
      * @return Collection<int, Grupo>
      */
-    public function getGrupos(): Collection
+    public function getGroup(): Collection
     {
-        return $this->grupos;
+        return $this->group;
     }
 
-    public function addGrupo(Grupo $grupo): static
+    public function addGroup(Group $group): static
     {
-        if (!$this->grupos->contains($grupo)) {
-            $this->grupos->add($grupo);
-            $grupo->setLocalidad($this);
+        if (!$this->group->contains($group)) {
+            $this->group->add($group);
+            $group->setcity($this);
         }
 
         return $this;
     }
 
-    public function removeGrupo(Grupo $grupo): static
+    public function removeGroup(Group $group): static
     {
-        if ($this->grupos->removeElement($grupo)) {
+        if ($this->group->removeElement($group)) {
             // set the owning side to null (unless already changed)
-            if ($grupo->getLocalidad() === $this) {
-                $grupo->setLocalidad(null);
+            if ($group->getCity() === $this) {
+                $group->setCity(null);
             }
         }
 
