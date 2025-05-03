@@ -46,7 +46,7 @@ security:
     access_control:
          # Vistas a las que solo puede acceder el administrador
          - { path: ^/admin, roles: ROLE_SUPER_ADMIN }
-         - { path: ^/register, roles: ROLE_ADMIN }
+         #- { path: ^/register, roles: ROLE_ADMIN }
          - { path: ^/city_new, roles: [ROLE_ADMIN, ROLE_USER, ROLE_CAMPUS, ROLE_SOPORTE, ROLE_ANALISTA_DATOS]  }
          - { path: ^/city_edit, roles: [ROLE_ADMIN, ROLE_USER, ROLE_CAMPUS, ROLE_SOPORTE, ROLE_ANALISTA_DATOS]  }
 
