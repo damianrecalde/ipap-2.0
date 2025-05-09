@@ -3,7 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\WorkTeam;
-use App\Form\WorkTeamType;
+use App\Form\WorkTeamFormType;
 use App\Repository\WorkTeamRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -36,20 +36,22 @@ final class WorkTeamController extends AbstractController
     #[Route('/new', name: 'work_team_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
+        $page_title = 'Crear nuevo equipo de trabajo';
         $workTeam = new WorkTeam();
-        $form = $this->createForm(WorkTeamType::class, $workTeam);
+        $form = $this->createForm(WorkTeamFormType::class, $workTeam);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->persist($workTeam);
             $entityManager->flush();
 
-            return $this->redirectToRoute('app_work_team_index', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('work_team', [], Response::HTTP_SEE_OTHER);
         }
 
         return $this->render('work_team/new.html.twig', [
             'work_team' => $workTeam,
-            'form' => $form,
+            'workTeamForm' => $form,
+            'page_title' => $page_title,
         ]);
     }
 
@@ -87,6 +89,6 @@ final class WorkTeamController extends AbstractController
             $entityManager->flush();
         }
 
-        return $this->redirectToRoute('app_work_team_index', [], Response::HTTP_SEE_OTHER);
+        return $this->redirectToRoute('work_team', [], Response::HTTP_SEE_OTHER);
     }
 }

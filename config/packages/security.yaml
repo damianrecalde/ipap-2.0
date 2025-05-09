@@ -46,16 +46,24 @@ security:
     access_control:
          # Vistas a las que solo puede acceder el administrador
          - { path: ^/admin, roles: ROLE_SUPER_ADMIN }
-         #- { path: ^/register, roles: ROLE_ADMIN }
-         - { path: ^/city_new, roles: [ROLE_ADMIN, ROLE_USER, ROLE_CAMPUS, ROLE_SOPORTE, ROLE_ANALISTA_DATOS]  }
-         - { path: ^/city_edit, roles: [ROLE_ADMIN, ROLE_USER, ROLE_CAMPUS, ROLE_SOPORTE, ROLE_ANALISTA_DATOS]  }
+         - { path: ^/register, roles: ROLE_ADMIN }
+         - { path: ^/city_new, roles: ROLE_ADMIN }
+         - { path: ^/city_edit, roles: ROLE_ADMIN }
+         - { path: ^/work_team_new, roles : ROLE_ADMIN }
+         - { path: ^/work_team_edit, roles: ROLE_ADMIN }
 
-         # Vistas a las que solo pueden acceder usuarios registrados
-         - { path: ^/dashboard, roles: [ROLE_ADMIN, ROLE_USER] }
+        # Vistas a las que solo pueden acceder usuarios registrados
+
+        # Ruta para panel principal, todos los usuarios registrados pueden acceder.
+         - { path: ^/dashboard, roles: [ROLE_ADMIN, ROLE_USER, ROLE_CAMPUS, ROLE_SOPORTE, ROLE_ANALISTA_DATOS] }
+
+        # Campos para listar, crear, editar y eliminar usuarios
          - { path: ^/user, roles: [ROLE_ADMIN, ROLE_USER, ROLE_CAMPUS, ROLE_SOPORTE, ROLE_ANALISTA_DATOS] }
          - { path: ^/profile, roles: ROLE_USER }
          - { path: ^/profile/\d+/edit, roles: [ROLE_USER, ROLE_ADMIN] }
 
+        # Rutas para acceder a cursos, se podra listar, crear, editar, eliminar y ver los detalles de los cursos.
+         - { path: ^/course, roles: [ROLE_ADMIN, ROLE_CAMPUS, ROLE_SOPORTE, ROLE_ANALISTA_DATOS] } 
 
 when@test:
     security:

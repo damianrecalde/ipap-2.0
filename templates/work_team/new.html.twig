@@ -1,11 +1,64 @@
-{% extends 'base.html.twig' %}
+{% extends 'layouts/base.html.twig' %}
 
-{% block title %}New WorkTeam{% endblock %}
+{% block title %}{{ page_title }}{% endblock %}
 
 {% block body %}
-    <h1>Create new WorkTeam</h1>
+    {% for flash_error in app.flashes('verify_email_error') %}
+        <div class="alert alert-danger" role="alert">{{ flash_error }}</div>
+    {% endfor %}
 
-    {{ include('work_team/_form.html.twig') }}
+    <!-- Formulario de registro de localidades -->
+    <section class="bg-gray-50 dark:bg-gray-900 p-3 sm:p-5 antialiased">
+        <div class="w-full h-full">
+            <div class=" p-4 bg-white dark:bg-gray-800 relative shadow-md sm:rounded-lg overflow-hidden">
+                <div class="overflow-x-auto">
+                    {{ form_start(workTeamForm, {'attr': {'class': 'space-y-4 md:space-y-6'}, 'enctype': 'multipart/form-data'}) }}
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <!-- Nombre -->
+                            <div>
+                                {{ form_label(workTeamForm.name, 'Nombre del equipo', {
+                                    'label_attr': {'class': 'block mb-2 text-sm font-medium text-gray-900 dark:text-white'}
+                                }) }}
+                                <div class="relative">
+                                    {{ form_widget(workTeamForm.name, {
+                                        'attr': {
+                                            'class': 'bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:outline-none focus:ring-1 focus:ring-orange-400 focus:border-orange-400 block w-full ps-10 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-orange-400 dark:focus:border-orange-400',
+                                            'placeholder': 'Nombre del equipo',
+                                            'id': 'name-input'
+                                        }
+                                    }) }}
+                                </div>
+                                {{ form_errors(workTeamForm.name) }}
+                            </div>
 
-    <a href="{{ path('app_work_team_index') }}">back to list</a>
+                            <!-- Descripción -->
+                            <div>
+                                {{ form_label(workTeamForm.description, 'Descripción', {
+                                    'label_attr': {'class': 'block mb-2 text-sm font-medium text-gray-900 dark:text-white'}
+                                }) }}
+                                <div class="relative">
+                                    {{ form_widget(workTeamForm.description, {
+                                        'attr': {
+                                            'class': 'bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:outline-none focus:ring-1 focus:ring-orange-400 focus:border-orange-400 block w-full ps-10 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-orange-400 dark:focus:border-orange-400',
+                                            'placeholder': 'Descripción del equipo',
+                                            'id': 'province-input'
+                                        }
+                                    }) }}
+                                </div>
+                                {{ form_errors(workTeamForm.description) }}
+                            </div>
+                        </div>
+                        <!-- Botón -->
+                        <div class="flex justify-center mt-6">
+                            <button type="bubmit" class="flex items-center justify-center text-white bg-orange-700 hover:bg-orange-800 focus:ring-4 focus:ring-primary-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-orange-700 dark:hover:bg-orange-800 focus:outline-none dark:focus:ring-primary-800">
+                                 Registrar equipo de trabajo
+                            </button>
+                        </div>
+                    {{ form_end(workTeamForm) }}
+                </div>
+            </div>          
+        </div>
+    </section>
+    <!-- Fin de formulario de registro de localidades -->
+
 {% endblock %}

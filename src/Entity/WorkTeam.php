@@ -35,6 +35,7 @@ class WorkTeam
     public function __construct()
     {
         $this->users = new ArrayCollection();
+        $this->createat = new \DateTime();
     }
 
     public function getId(): ?int
@@ -94,4 +95,5 @@ class WorkTeam
     {
         return $this->users;
     }
+
 }

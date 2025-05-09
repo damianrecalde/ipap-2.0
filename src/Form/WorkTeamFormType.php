@@ -8,6 +8,7 @@ use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 
 class WorkTeamFormType extends AbstractType
 {
@@ -16,12 +17,6 @@ class WorkTeamFormType extends AbstractType
         $builder
             ->add('name')
             ->add('description')
-            ->add('createat', null, [
-                'widget' => 'single_text',
-            ])
-            ->add('updateat', null, [
-                'widget' => 'single_text',
-            ])
         ;
     }
 
