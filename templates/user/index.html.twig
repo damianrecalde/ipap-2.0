@@ -116,6 +116,7 @@
                             <th scope="col" class="px-4 py-3">Dni</th>
                             <th scope="col" class="px-4 py-3">Email</th>
                             <th scope="col" class="px-4 py-3">Estado</th>
+                            <th scope="col" class="px-4 py-3">2FA Authentication</th>
                             <th scope="col" class="px-4 py-3">Acciones</th>
                         </tr>
                     </thead>
@@ -133,6 +134,20 @@
                                         <div class="h-2.5 w-2.5 rounded-full {{ user.isOnline ? 'bg-green-500' : 'bg-red-500' }} me-2"></div>
                                         {{ user.isOnline ? 'Online' : 'Offline' }}
                                     </div>
+                                </td>
+                                <td class="px-4 py-3">
+                                    {% if is_granted('ROLE_ADMIN') %}
+                                        <form action="{{ path('toggle_2fa', { id: user.id }) }}" method="post">
+                                            <input type="hidden" name="_token" value="{{ csrf_token('toggle_2fa_' ~ user.id) }}">
+                                            <button type="submit">
+                                                {% if user.googleAuthenticatorSecret %}
+                                                    Desactivar 2FA
+                                                {% else %}
+                                                    Activar 2FA
+                                                {% endif %}
+                                            </button>
+                                        </form>
+                                    {% endif %}
                                 </td>
                                 <td class="px-4 py-3 flex items-center">
                                     {% set dropdownId = 'dropdown-' ~ user.id %}

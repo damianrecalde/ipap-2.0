@@ -78,6 +78,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\JoinTable(name: 'user_work_team')]
     private Collection $workTeams;
 
+    #[ORM\Column(type:'string', nullable:true)]
+    private $googleAuthenticatorSecret;
+
+    #[ORM\Column(type:'boolean', options:['default' => false])]
+    private bool $isGoogleAuthenticatorEnabled = false;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -288,6 +294,30 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         if ($this->workTeams->removeElement($workTeam)) {
             $workTeam->removeUser($this);
         }
+
+        return $this;
+    }
+
+    public function getGoogleAuthenticatorSecret(): ?string
+    {
+        return $this->googleAuthenticatorSecret;
+    }
+    
+    public function setGoogleAuthenticatorSecret(?string $googleAuthenticatorSecret): static
+    {
+        $this->googleAuthenticatorSecret = $googleAuthenticatorSecret;
+
+        return $this;
+    }
+
+    public function isGoogleAuthenticatorEnabled(): bool
+    {
+        return $this->isGoogleAuthenticatorEnabled;
+    }
+
+    public function setGoogleAuthenticatorEnabled(bool $isGoogleAuthenticatorEnabled): static
+    {
+        $this->isGoogleAuthenticatorEnabled = $isGoogleAuthenticatorEnabled;
 
         return $this;
     }

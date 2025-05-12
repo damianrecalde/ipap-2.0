@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Repository\GroupRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: GroupRepository::class)]
 #[ORM\Table(name: '`group`')]
@@ -20,7 +21,7 @@ class Group
     private ?\DateTimeInterface $start_date = null;
 
     #[ORM\Column(type: 'date', nullable: true)]
-    private ?\DateTimeInterface $end_date = null; // Nueva propiedad
+    private ?\DateTimeInterface $end_date = null;
 
     #[ORM\Column(type: 'date', nullable: true)]
     private ?\DateTimeInterface $close_date = null;
@@ -30,24 +31,27 @@ class Group
     private ?Course $course = null;
 
     #[ORM\Column(type: 'string', length: 255)]
-    private $format; // Valores: virtual, autogestionada, presencial
+    private string $format; // virtual, autogestionada, presencial
 
     #[ORM\Column(type: 'integer', nullable: true)]
-    private int $actual_capacity = 0;
+    private ?int $actual_capacity = 0;
 
     #[ORM\Column(type: 'integer', options: ["default" => 160])]
     private int $max_capacity = 160;
 
-    #[ORM\ManyToOne(targetEntity: City::class)]
+    #[ORM\ManyToOne(targetEntity: City::class, inversedBy: 'groups')]
     #[ORM\JoinColumn(nullable: true)]
-    private ?City $city = null; 
+    private ?City $city = null;
 
-    /*#[ORM\ManyToOne(targetEntity: Place::class)]
+
+    /*
+    #[ORM\ManyToOne(targetEntity: Place::class)]
     #[ORM\JoinColumn(nullable: true)]
-    private ?Place $place = null; // Relación con Sede (lugar)*/
+    private ?Place $place = null;
+    */
 
     #[ORM\Column(type: 'integer', nullable: true)]
-    private int $reunion_number;
+    private ?int $reunion_number = null;
 
     public function getId(): ?int
     {
@@ -150,7 +154,8 @@ class Group
         return $this;
     }
 
-    /*public function getPlace(): ?Place
+    /*
+    public function getPlace(): ?Place
     {
         return $this->place;
     }
@@ -160,14 +165,15 @@ class Group
         $this->place = $place;
 
         return $this;
-    }*/
+    }
+    */
 
     public function getReunionNumber(): ?int
     {
         return $this->reunion_number;
     }
 
-    public function setReunionNumber(int $reunion_number): self
+    public function setReunionNumber(?int $reunion_number): self
     {
         $this->reunion_number = $reunion_number;
 
@@ -201,12 +207,12 @@ class Group
 
     public function getPlaceName(): ?string
     {
-        return $this->place ? $this->place->getName() : null;
+        // return $this->place ? $this->place->getName() : null;
+        return null; // temporal porque está comentado el campo `place`
     }
 
     public function getCourseName(): ?string
     {
         return $this->course ? $this->course->getName() : null;
     }
-
 }

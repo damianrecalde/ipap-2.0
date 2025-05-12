@@ -11,6 +11,10 @@ use App\Repository\UserRepository;
 use Symfony\Component\String\Slugger\SluggerInterface;
 use App\Form\RegistrationFormType;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
+use App\Service\GoogleAuthenticatorService;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+
+
 
 final class UserController extends AbstractController
 {
@@ -40,8 +44,10 @@ final class UserController extends AbstractController
     }
 
     #[Route('/user/edit/{id}', name: 'edit_profile')]
-    public function edit(User $user, Request $request, EntityManagerInterface $entityManager, UserPasswordHasherInterface $passwordHasher, SluggerInterface $slugger): Response 
+    public function edit(User $user, Request $request, EntityManagerInterface $entityManager, UserPasswordHasherInterface $passwordHasher, SluggerInterface $slugger): Response
     {
+        $page = 'Editar perfil';
+        $tableTitle = 'Editar perfil de usuario';
         
         // 🔒 Solo el usuario logueado o un administrador puede editar
         if ($this->getUser() !== $user && !$this->isGranted('ROLE_ADMIN')) {
@@ -49,7 +55,9 @@ final class UserController extends AbstractController
         }
 
         // 🧾 Crear y procesar formulario
-        $form = $this->createForm(RegistrationFormType::class, $user);
+        $form = $this->createForm(RegistrationFormType::class, $user, [
+            'is_edit' => true,  // Indicamos que estamos editando un usuario existente
+        ]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -67,7 +75,7 @@ final class UserController extends AbstractController
             }
 
             // 🖼️ Manejar subida de imagen
-            $imageFile = $form->get('profileImage')->getData();
+            $imageFile = $form->get('imageProfile')->getData();
             if ($imageFile) {
                 $originalFilename = pathinfo($imageFile->getClientOriginalName(), PATHINFO_FILENAME);
                 $safeFilename = $slugger->slug($originalFilename);
@@ -92,14 +100,15 @@ final class UserController extends AbstractController
         }
 
         // 🖥️ Renderizar vista
-        return $this->render('user/profile_edit.html.twig', [
+        return $this->render('user/edit.html.twig', [
             'editForm' => $form->createView(),
             'user' => $user,
-            'page' => $page,
+            'page_title' => $page,
             'tableTitle' => $tableTitle,
             'template_name' => 'Editar mi perfil',
         ]);
     }
+
 
 
     //Detalle del perfil del usuario
@@ -175,6 +184,106 @@ final class UserController extends AbstractController
         $user->setIsDeleted(true); // O si prefieres usar un campo isDeleted
         $em->flush();
 
+    }
+
+    // src/Controller/UserController.php
+
+    #[Route('/perfil/habilitar-2fa', name: 'enable_2fa')]
+    public function enable2FA(GoogleAuthenticatorService $googleAuthenticatorService): Response
+    {
+        $user = $this->getUser();
+
+        if ($user->is2faEnabled()) {
+            // Si 2FA ya está habilitado, lo deshabilitamos
+            $user->setGoogleAuthenticatorSecret(null); // Eliminar el secreto
+            $this->addFlash('success', 'La autenticación en dos pasos ha sido deshabilitada.');
+        } else {
+            // Si 2FA no está habilitado, lo habilitamos
+            $secret = $googleAuthenticatorService->generateSecret();
+            $user->setGoogleAuthenticatorSecret($secret);
+
+            $this->addFlash('success', 'La autenticación en dos pasos ha sido habilitada.');
+        }
+
+        $this->getDoctrine()->getManager()->flush();
+
+        // Mostrar el código QR si es que se habilitó 2FA
+        $qrCodeUrl = $user->is2faEnabled() ? $googleAuthenticatorService->getQRCodeUrl($user->getEmail(), $user->getGoogleAuthenticatorSecret()) : null;
+
+        return $this->render('user/enable_2fa.html.twig', [
+            'qrCodeUrl' => $qrCodeUrl,
+        ]);
+    }
+
+    #[Route('/perfil/verificar-2fa', name: 'verify_2fa')]
+    public function verify2FA(Request $request, GoogleAuthenticatorService $googleAuthenticatorService): Response
+    {
+        $user = $this->getUser();
+        
+        // Verificar que el usuario tiene un secreto de Google Authenticator asignado
+        $secret = $user->getGoogleAuthenticatorSecret();
+        
+        if (empty($secret)) {
+            // Si el usuario no tiene un secreto, significa que 2FA no está habilitado, por lo que no se puede verificar el código
+            $this->addFlash('error', 'Autenticación en dos pasos no está habilitada para este usuario.');
+            return $this->redirectToRoute('user_profile'); // Cambia esto por la ruta correcta de tu perfil
+        }
+
+        $code = $request->request->get('auth_code');
+
+        // Verificar el código solo si el secreto está presente
+        $isCodeValid = $googleAuthenticatorService->checkCode($secret, $code);
+
+        if ($isCodeValid) {
+            $this->addFlash('success', 'Autenticación en dos pasos habilitada con éxito.');
+            // Podés guardar un flag como $user->setIs2FAEnabled(true); si querés
+        } else {
+            $this->addFlash('error', 'Código inválido, intentá de nuevo.');
+        }
+
+        return $this->redirectToRoute('user_profile'); // Cambia esto por la ruta correcta de tu perfil
+    }
+
+
+
+    #[Route('/perfil/activar-desactivar-2fa/{id}', name: 'toggle_2fa', methods: ['POST'])]
+    #[IsGranted('ROLE_ADMIN')] // Solo los administradores pueden alternar el 2FA
+    public function toggle2FA(
+        int $id,
+        Request $request,
+        UserRepository $userRepository,
+        GoogleAuthenticatorService $googleAuthenticatorService
+        ): Response {
+        $user = $userRepository->find($id);
+
+        if (!$user) {
+            throw $this->createNotFoundException('El usuario no existe');
+        }
+
+        // Validar el token CSRF
+        $submittedToken = $request->request->get('_token');
+        if (!$this->isCsrfTokenValid('toggle_2fa_' . $user->getId(), $submittedToken)) {
+            throw $this->createAccessDeniedException('Token CSRF inválido.');
+        }
+
+        // Activar o desactivar 2FA
+        if ($user->getGoogleAuthenticatorSecret()) {
+            // Desactivar 2FA
+            $user->setGoogleAuthenticatorSecret(null);
+            $user->setGoogleAuthenticatorEnabled(false);
+            $this->addFlash('success', 'Autenticación en dos pasos desactivada correctamente.');
+        } else {
+            // Activar 2FA
+            $secret = $googleAuthenticatorService->generateSecret();
+            $user->setGoogleAuthenticatorSecret($secret);
+            $user->setGoogleAuthenticatorEnabled(true);
+            $this->addFlash('success', 'Autenticación en dos pasos activada correctamente.');
+        }
+
+        $this->getDoctrine()->getManager()->flush();
+
+        // Redirigir a la página de edición del usuario
+        return $this->redirectToRoute('edit_profile', ['id' => $user->getId()]);
     }
 
 }

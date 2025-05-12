@@ -11,6 +11,9 @@ use Symfony\Component\Security\Http\Authenticator\Passport\Credentials\PasswordC
 use Symfony\Component\Security\Http\Authenticator\Passport\Passport;
 use Symfony\Component\Security\Http\SecurityRequestAttributes;
 use Symfony\Component\Security\Http\Util\TargetPathTrait;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use Symfony\Component\Security\Core\User\UserInterface;
+
 
 class AppCustomAuthenticator extends AbstractLoginFormAuthenticator
 {
@@ -38,7 +41,7 @@ class AppCustomAuthenticator extends AbstractLoginFormAuthenticator
         );
     }
 
-    public function onAuthenticationSuccess(Request $request, TokenInterface $token, string $firewallName): ?Response
+    /*public function onAuthenticationSuccess(Request $request, TokenInterface $token, string $firewallName): ?Response
     {
         if ($targetPath = $this->getTargetPath($request->getSession(), $firewallName)) {
             return new RedirectResponse($targetPath);
@@ -51,5 +54,27 @@ class AppCustomAuthenticator extends AbstractLoginFormAuthenticator
     protected function getLoginUrl(Request $request): string
     {
         return $this->urlGenerator->generate(self::LOGIN_ROUTE);
+    }*/
+
+    public function onAuthenticationSuccess(Request $request, TokenInterface $token, string $firewallName): ?Response
+    {
+        $user = $token->getUser();
+
+        // Verificar si el usuario implementa UserInterface y tiene 2FA habilitado
+        if ($user instanceof UserInterface && method_exists($user, 'getGoogleAuthenticatorSecret') && $user->getGoogleAuthenticatorSecret()) {
+            // Guardar estado en sesión indicando que falta completar el 2FA
+            $request->getSession()->set('2fa_pending', true);
+            return new RedirectResponse($this->urlGenerator->generate('verify_2fa'));
+        }
+
+        // Redirigir al dashboard si no hay 2FA
+        return new RedirectResponse($this->urlGenerator->generate('dashboard'));
     }
+
+    protected function getLoginUrl(Request $request): string
+    {
+        return $this->urlGenerator->generate(self::LOGIN_ROUTE);
+    }
+
+
 }

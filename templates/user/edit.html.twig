@@ -12,15 +12,15 @@
         <div class="w-full h-full">
             <div class=" p-4 bg-white dark:bg-gray-800 relative shadow-md sm:rounded-lg overflow-hidden">
                 <div class="overflow-x-auto">
-                    {{ form_start(registrationForm, {'attr': {'class': 'space-y-4 md:space-y-6'}, 'enctype': 'multipart/form-data'}) }}
+                    {{ form_start(editForm, {'attr': {'class': 'space-y-4 md:space-y-6'}, 'enctype': 'multipart/form-data'}) }}
                         <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                             <!-- First Name -->
                             <div>
-                                {{ form_label(registrationForm.firstname, 'Nombre', {
+                                {{ form_label(editForm.firstname, 'Nombre', {
                                     'label_attr': {'class': 'block mb-2 text-sm font-medium text-gray-900 dark:text-white'}
                                 }) }}
                                 <div class="relative">
-                                    {{ form_widget(registrationForm.firstname, {
+                                    {{ form_widget(editForm.firstname, {
                                         'attr': {
                                             'class': 'bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:outline-none focus:ring-1 focus:ring-orange-400 focus:border-orange-400 block w-full ps-10 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-orange-400 dark:focus:border-orange-400',
                                             'placeholder': 'Nombre',
@@ -28,16 +28,16 @@
                                         }
                                     }) }}
                                 </div>
-                                {{ form_errors(registrationForm.firstname) }}
+                                {{ form_errors(editForm.firstname) }}
                             </div>
 
                             <!-- Last Name -->
                             <div>
-                                {{ form_label(registrationForm.lastname, 'Apellido', {
+                                {{ form_label(editForm.lastname, 'Apellido', {
                                     'label_attr': {'class': 'block mb-2 text-sm font-medium text-gray-900 dark:text-white'}
                                 }) }}
                                 <div class="relative">
-                                    {{ form_widget(registrationForm.lastname, {
+                                    {{ form_widget(editForm.lastname, {
                                         'attr': {
                                             'class': 'bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:outline-none focus:ring-1 focus:ring-orange-400 focus:border-orange-400 block w-full ps-10 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-orange-400 dark:focus:border-orange-400',
                                             'placeholder': 'Apellido',
@@ -45,15 +45,15 @@
                                         }
                                     }) }}
                                 </div>
-                                {{ form_errors(registrationForm.lastname) }}
+                                {{ form_errors(editForm.lastname) }}
                             </div>
                             <!-- DNI -->
                             <div>
-                                {{ form_label(registrationForm.dni, 'DNI', {
+                                {{ form_label(editForm.dni, 'DNI', {
                                     'label_attr': {'class': 'block mb-2 text-sm font-medium text-gray-900 dark:text-white'}
                                 }) }}
                                 <div class="relative">
-                                    {{ form_widget(registrationForm.dni, {
+                                    {{ form_widget(editForm.dni, {
                                         'attr': {
                                             'class': 'bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:outline-none focus:ring-1 focus:ring-orange-400 focus:border-orange-400 block w-full ps-10 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-orange-400 dark:focus:border-orange-400',
                                             'placeholder': 'DNI',
@@ -64,13 +64,13 @@
                                         }
                                     }) }}
                                 </div>
-                                {{ form_errors(registrationForm.dni) }}
+                                {{ form_errors(editForm.dni) }}
                             </div>
                         </div>
                          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                             <!-- Email -->
                             <div>
-                                {{ form_label(registrationForm.email, 'Email', {
+                                {{ form_label(editForm.email, 'Email', {
                                     'label_attr': {'class': 'block mb-2 text-sm font-medium text-gray-900 dark:text-white'}
                                 }) }}
                                 <div class="relative">
@@ -80,7 +80,7 @@
                                             <path d="M11.241 9.817c-.36.275-.801.425-1.255.427-.428 0-.845-.138-1.187-.395L0 2.6V14a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V2.5l-8.759 7.317Z"/>
                                         </svg>
                                     </div>
-                                    {{ form_widget(registrationForm.email, {
+                                    {{ form_widget(editForm.email, {
                                         'attr': {
                                             'class': 'bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:outline-none focus:ring-1 focus:ring-orange-400 focus:border-orange-400 block w-full ps-10 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-orange-400 dark:focus:border-orange-400',
                                             'placeholder': 'nombre@ipap.tierradelfuego.gob.ar',
@@ -88,46 +88,46 @@
                                         }
                                     }) }}
                                 </div>
-                                {{ form_errors(registrationForm.email) }}
+                                {{ form_errors(editForm.email) }}
                             </div>
 
                             <!-- Ciudad -->
                             <div>
-                                {{ form_label(registrationForm.city, 'Ciudad', {
+                                {{ form_label(editForm.city, 'Ciudad', {
                                     'label_attr': {'class': 'block mb-2 text-sm font-medium text-gray-900 dark:text-white'}
                                 }) }}
                                 <div class="relative">
-                                    {{ form_widget(registrationForm.city, {
+                                    {{ form_widget(editForm.city, {
                                         'attr': {
                                             'class': 'bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:outline-none focus:ring-1 focus:ring-orange-400 focus:border-orange-400 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-orange-400 dark:focus:border-orange-400'
                                         }
                                     }) }}
                                 </div>
-                                {{ form_errors(registrationForm.city) }}
+                                {{ form_errors(editForm.city) }}
                             </div>
                             <!-- Imagen de perfil -->
                             <div>
-                                {{ form_label(registrationForm.imageProfile, 'Foto de perfil', {
+                                {{ form_label(editForm.imageProfile, 'Foto de perfil', {
                                     'label_attr': {'class': 'block mb-2 text-sm font-medium text-gray-900 dark:text-white'}
                                 }) }}
                                 <div class="relative">
-                                    {{ form_widget(registrationForm.imageProfile, {
+                                    {{ form_widget(editForm.imageProfile, {
                                         'attr': {
                                             'class': 'bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:outline-none focus:ring-1 focus:ring-orange-400 focus:border-orange-400 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-orange-400 dark:focus:border-orange-400',
                                         }
                                     }) }}
                                 </div>
-                                {{ form_errors(registrationForm.imageProfile) }}
+                                {{ form_errors(editForm.imageProfile) }}
                             </div>
                         </div>
                         <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
                             <!-- Contraseña -->
                             <div class="relative">
-                                {{ form_label(registrationForm.plainPassword, 'Contraseña', {
+                                {{ form_label(editForm.plainPassword, 'Contraseña', {
                                     'label_attr': {'class': 'block mb-2 text-sm font-medium text-gray-900 dark:text-white'}
                                 }) }}
                                 <div class="relative">
-                                    {{ form_widget(registrationForm.plainPassword, {
+                                    {{ form_widget(editForm.plainPassword, {
                                         'attr': {
                                             'id': 'password-field',
                                             'class': 'bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:outline-none focus:ring-1 focus:ring-orange-400 focus:border-orange-400 block w-full p-2.5 pr-10 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:focus:ring-orange-400 dark:focus:border-orange-400',
@@ -141,16 +141,16 @@
                                         </svg>
                                     </button>
                                 </div>
-                                {{ form_errors(registrationForm.plainPassword) }}
+                                {{ form_errors(editForm.plainPassword) }}
                             </div>
 
                             <!-- Confirmar contraseña -->
                             <div class="relative">
-                                {{ form_label(registrationForm.confirmPassword, 'Repetir contraseña', {
+                                {{ form_label(editForm.confirmPassword, 'Repetir contraseña', {
                                     'label_attr': {'class': 'block mb-2 text-sm font-medium text-gray-900 dark:text-white'}
                                 }) }}
                                 <div class="relative">
-                                    {{ form_widget(registrationForm.confirmPassword, {
+                                    {{ form_widget(editForm.confirmPassword, {
                                         'attr': {
                                             'id': 'confirm-password-field',
                                             'class': 'bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:outline-none focus:ring-1 focus:ring-orange-400 focus:border-orange-400 block w-full p-2.5 pr-10 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:focus:ring-orange-400 dark:focus:border-orange-400',
@@ -164,16 +164,16 @@
                                         </svg>
                                     </button>
                                 </div>
-                                {{ form_errors(registrationForm.confirmPassword) }}
+                                {{ form_errors(editForm.confirmPassword) }}
                             </div>
                             <!-- Roles -->
                             <div>
-                                {{ form_label(registrationForm.roles, 'Roles', {
+                                {{ form_label(editForm.roles, 'Roles', {
                                     'label_attr': {'class': 'block mb-2 text-sm font-medium text-gray-900 dark:text-white'}
                                 }) }}
 
                                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-4">
-                                    {% for child in registrationForm.roles %}
+                                    {% for child in editForm.roles %}
                                         <div class="flex items-center mb-2">
                                             {{ form_widget(child, {
                                                 'attr': {
@@ -186,22 +186,22 @@
                                         </div>
                                     {% endfor %}
                                 </div>
-                                {{ form_errors(registrationForm.roles) }}
+                                {{ form_errors(editForm.roles) }}
                             </div>
                         <div class="grid grid-cols-1">
                             <!-- Equipos de trabajo -->
                             <div>
-                                {{ form_label(registrationForm.workTeams, 'Grupos de trabajo', {
+                                {{ form_label(editForm.workTeams, 'Grupos de trabajo', {
                                     'label_attr': {'class': 'block mb-2 text-sm font-medium text-gray-900 dark:text-white'}
                                 }) }}
                                 <div class="relative">
-                                    {{ form_widget(registrationForm.workTeams, {
+                                    {{ form_widget(editForm.workTeams, {
                                         'attr': {
                                             'class': 'bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:outline-none focus:ring-1 focus:ring-orange-400 focus:border-orange-400 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-orange-400 dark:focus:border-orange-400'
                                         }
                                     }) }}
                                 </div>
-                                {{ form_errors(registrationForm.workTeams) }}
+                                {{ form_errors(editForm.workTeams) }}
                             </div>
                         </div>
                         </div>
@@ -209,13 +209,13 @@
                         <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
                             <!-- Términos y Condiciones -->
                             <div class="flex items-start">
-                                {{ form_widget(registrationForm.agreeTerms, {
+                                {{ form_widget(editForm.agreeTerms, {
                                     'attr': {
                                         'class': 'mt-1 w-4 h-4 text-orange-700 bg-gray-100 border-gray-300 rounded-sm focus:ring-orange-500 dark:focus:ring-orange-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600'
                                     }
                                 }) }}
                                 <div class="ml-3 text-sm">
-                                    <label for="{{ registrationForm.agreeTerms.vars.id }}" class="font-light text-gray-500 dark:text-gray-300">
+                                    <label for="{{ editForm.agreeTerms.vars.id }}" class="font-light text-gray-500 dark:text-gray-300">
                                         Acepto los
                                         <a href="{{ asset('pdf/terminos-condiciones.pdf') }}" target="_blank" class="font-medium text-orange-400 hover:underline dark:text-orange-400">
                                             Términos y Condiciones
@@ -230,14 +230,14 @@
                                  Registrar usuario
                             </button>
                         </div>
-                    {{ form_end(registrationForm) }}
+                    {{ form_end(editForm) }}
                 </div>
             </div>          
         </div>
     </section>
     <!-- Fin de formulario de registro de usuario -->
     <script>
-    document.getElementById('{{ registrationForm.imageProfile.vars.id }}').addEventListener('change', function (e) {
+    document.getElementById('{{ editForm.imageProfile.vars.id }}').addEventListener('change', function (e) {
         const preview = document.getElementById('image-preview');
         const file = e.target.files[0];
         if (file) {

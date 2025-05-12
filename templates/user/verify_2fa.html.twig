@@ -1,0 +1,14 @@
+<h1>Verificación 2FA</h1>
+
+{% for message in app.flashes('error') %}
+    <div class="alert alert-danger">{{ message }}</div>
+{% endfor %}
+{% for message in app.flashes('success') %}
+    <div class="alert alert-success">{{ message }}</div>
+{% endfor %}
+
+<form method="post" action="{{ path('verify_2fa') }}">
+    <label for="auth_code">Código de autenticación:</label>
+    <input type="text" name="auth_code" id="auth_code" required>
+    <button type="submit">Verificar</button>
+</form>

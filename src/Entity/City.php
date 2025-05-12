@@ -6,6 +6,8 @@ use App\Repository\CityRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use App\Entity\User;
+use App\Entity\Group;
 
 #[ORM\Entity(repositoryClass: CityRepository::class)]
 class City
@@ -24,21 +26,17 @@ class City
     #[ORM\Column(length: 100)]
     private ?string $zipCode = null;
 
-    // Cambié "collection" por "Collection" y añadí el uso de ArrayCollection
     #[ORM\OneToMany(mappedBy: 'city', targetEntity: User::class)]
     private Collection $users;
 
-    /**
-     * @var Collection<int, Grupo>
-     */
-    #[ORM\OneToMany(targetEntity: Group::class, mappedBy: 'city', cascade: ['persist', 'remove'])]
-    private Collection $group;
+    #[ORM\OneToMany(mappedBy: 'city', targetEntity: Group::class)]
+    private Collection $groups;
 
-    // El constructor inicializa la colección correctamente
+
     public function __construct()
     {
-        $this->users = new ArrayCollection(); // Corregí $this->user a $this->users
-        $this->grupos = new ArrayCollection();
+        $this->users = new ArrayCollection();
+        $this->groups = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -100,7 +98,6 @@ class City
     public function removeUser(User $user): self
     {
         if ($this->users->removeElement($user)) {
-            // set the owning side to null (unless already changed)
             if ($user->getCity() === $this) {
                 $user->setCity(null);
             }
@@ -109,38 +106,34 @@ class City
         return $this;
     }
 
-    public function __toString(): string
+    public function getGroups(): Collection
     {
-        return $this->name;
+        return $this->groups;
     }
 
-    /**
-     * @return Collection<int, Grupo>
-     */
-    public function getGroup(): Collection
+    public function addGroup(Group $group): self
     {
-        return $this->group;
-    }
-
-    public function addGroup(Group $group): static
-    {
-        if (!$this->group->contains($group)) {
-            $this->group->add($group);
-            $group->setcity($this);
+        if (!$this->groups->contains($group)) {
+            $this->groups[] = $group;
+            $group->setCity($this);
         }
 
         return $this;
     }
 
-    public function removeGroup(Group $group): static
+    public function removeGroup(Group $group): self
     {
-        if ($this->group->removeElement($group)) {
-            // set the owning side to null (unless already changed)
+        if ($this->groups->removeElement($group)) {
             if ($group->getCity() === $this) {
                 $group->setCity(null);
             }
         }
 
         return $this;
+    }
+
+    public function __toString(): string
+    {
+        return $this->name ?? '';
     }
 }

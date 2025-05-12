@@ -2,17 +2,21 @@
 
 namespace App\Form;
 
-use App\Entity\{User, City, WorkTeam  };
-use Symfony\Component\Form\{ AbstractType, FormBuilderInterface };
-use Symfony\Component\Form\Extension\Core\Type\{ CheckboxType, PasswordType, FileType, TextType, ChoiceType };
+use App\Entity\{User, City, WorkTeam};
+use Symfony\Component\Form\{AbstractType, FormBuilderInterface};
+use Symfony\Component\Form\Extension\Core\Type\{CheckboxType, PasswordType, FileType, TextType, ChoiceType};
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Validator\Constraints\{ IsTrue, Length, NotBlank };
+use Symfony\Component\Validator\Constraints\{IsTrue, Length, NotBlank};
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use Symfony\Component\Form\CallbackTransformer;
+
 
 class RegistrationFormType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
+        $isEdit = $options['is_edit'] ?? false; // Asegura que sabemos si estamos editando un usuario
+
         $builder
             ->add('email')
             ->add('firstname', TextType::class, [
@@ -26,7 +30,7 @@ class RegistrationFormType extends AbstractType
                 'attr' => [
                     'inputmode' => 'numeric',     // teclado numérico en móviles
                     'pattern' => '\d*',           // solo números (sin puntos, guiones, etc.)
-                    'maxlength' => 8,            // opcional: limita cantidad de dígitos
+                    'maxlength' => 8,             // opcional: limita cantidad de dígitos
                     'placeholder' => 'Ej: 12345678'
                 ]
             ])
@@ -68,19 +72,21 @@ class RegistrationFormType extends AbstractType
                 'expanded' => true,  // Mostrar como checkboxes
                 'multiple' => true,  // Permite seleccionar múltiples roles
             ])
+            ->add('googleAuthenticatorEnabled', CheckboxType::class, [
+                'label' => 'Activar autenticación en dos pasos (2FA)',
+                'required' => false,
+            ])
             ->add('plainPassword', PasswordType::class, [
-                // instead of being set onto the object directly,
-                // this is read and encoded in the controller
                 'mapped' => false,
                 'attr' => ['autocomplete' => 'new-password'],
-                'constraints' => [
+                'required' => !$isEdit,
+                'constraints' => $isEdit ? [] : [
                     new NotBlank([
-                        'message' => 'Please enter a password',
+                        'message' => 'Por favor ingresá una contraseña.',
                     ]),
                     new Length([
                         'min' => 6,
-                        'minMessage' => 'Your password should be at least {{ limit }} characters',
-                        // max length allowed by Symfony for security reasons
+                        'minMessage' => 'La contraseña debe tener al menos {{ limit }} caracteres.',
                         'max' => 4096,
                     ]),
                 ],
@@ -88,15 +94,35 @@ class RegistrationFormType extends AbstractType
             ->add('confirmPassword', PasswordType::class, [
                 'label' => 'Repetir Contraseña',
                 'mapped' => false,
-                'required' => true,
+                'required' => !$isEdit,
             ])
         ;
+
+        if (!$isEdit) {
+            // Validación para asegurar que las contraseñas coincidan
+            $builder->get('confirmPassword')->addModelTransformer(new CallbackTransformer(
+                function ($originalPassword) {
+                    // Transformar el valor al pasar el formulario
+                    return $originalPassword;
+                },
+                function ($submittedPassword) {
+                    // Comparar las contraseñas
+                    $plainPassword = $this->getData()->getPlainPassword();
+                    if ($submittedPassword !== $plainPassword) {
+                        // Si no coinciden, generar un error de validación
+                        throw new TransformationFailedException('Las contraseñas no coinciden.');
+                    }
+                    return $submittedPassword;
+                }
+            ));
+        }
     }
 
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
             'data_class' => User::class,
+            'is_edit' => false,  // Por defecto no estamos editando un usuario
         ]);
     }
 }
