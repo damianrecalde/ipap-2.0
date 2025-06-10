@@ -49,19 +49,19 @@ final class UserController extends AbstractController
         $page = 'Editar perfil';
         $tableTitle = 'Editar perfil de usuario';
         
-        // 🔒 Solo el usuario logueado o un administrador puede editar
+        // Solo el usuario logueado o un administrador puede editar
         if ($this->getUser() !== $user && !$this->isGranted('ROLE_ADMIN')) {
             throw $this->createAccessDeniedException('No tienes permiso para editar este perfil.');
         }
 
-        // 🧾 Crear y procesar formulario
+        // Crear y procesar formulario
         $form = $this->createForm(RegistrationFormType::class, $user, [
             'is_edit' => true,  // Indicamos que estamos editando un usuario existente
         ]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            // 🔑 Manejar cambio de contraseña
+            // Manejar cambio de contraseña
             $oldPassword = $form->get('oldPassword')->getData();
             $newPassword = $form->get('plainPassword')->getData();
 
@@ -74,7 +74,7 @@ final class UserController extends AbstractController
                 }
             }
 
-            // 🖼️ Manejar subida de imagen
+            // Manejar subida de imagen
             $imageFile = $form->get('imageProfile')->getData();
             if ($imageFile) {
                 $originalFilename = pathinfo($imageFile->getClientOriginalName(), PATHINFO_FILENAME);
@@ -92,14 +92,14 @@ final class UserController extends AbstractController
                 }
             }
 
-            // 💾 Guardar cambios
+            // Guardar cambios
             $entityManager->flush();
             $this->addFlash('success', 'Perfil actualizado correctamente.');
 
             return $this->redirectToRoute('user_profile_view', ['id' => $user->getId()]);
         }
 
-        // 🖥️ Renderizar vista
+        // Renderizar vista
         return $this->render('user/edit.html.twig', [
             'editForm' => $form->createView(),
             'user' => $user,
