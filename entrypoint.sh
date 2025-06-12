@@ -1,16 +1,19 @@
 #!/bin/sh
 
-# Entrypoint para Symfony + NPM
 set -e
 
-echo "🏗 Ejecutando composer install..."
-composer install --no-interaction
+cd /var/www/html
 
-echo "📦 Ejecutando npm install..."
-npm install
+# Ejecutar composer install solo si composer.json existe
+if [ -f composer.json ]; then
+  echo "🏗 Ejecutando composer install..."
+  composer install --no-interaction --prefer-dist --optimize-autoloader
+else
+  echo "⚠️ No se encontró composer.json en /var/www/html"
+fi
 
-echo "🎛 Ejecutando npx encore dev..."
-npx encore dev
+# Lógica opcional: ejecutar migrations, build de frontend, etc.
+# npm install && npm run build
 
-# Ejecutar PHP-FPM (comando por defecto)
+# Iniciar PHP-FPM (debe ser el último comando)
 exec php-fpm
